@@ -8,14 +8,6 @@ public class CRC  {
     private String input, generator;
     private int genInt;
 
-
-    //Temporary main method used for testing
-    public static void main(String[] args){
-        CRC test = new CRC("1101011011011100","1101110111011101");
-        System.out.println(test.generateFrame());
-    }
-
-
     /**
      * Constructs a new CRC object
      * @param frame The frame to be encoded
@@ -36,11 +28,24 @@ public class CRC  {
     }
 
     /**
+     * Generates padding using the given character
+     * @param length The length of the padding
+     * @param character The character used in padding
+     * @return A string used for padding
+     */
+    private static String genPadding(int length, Character character){
+        if (length > 0) {
+            return new String(new char[length]).replace("\0", character.toString());
+        } else {
+            return "";
+        }
+    }
+    /**
      * Helper method, generates the frame with the correct number of appended zeros
      * @return Padded frame
      */
-    private String genFrame(){
-       return input + new String(new char[generator.length()-1]).replace("\0","0");
+    private String padFrame(){
+       return input + genPadding(generator.length() - 1, '0');
     }
 
     /**
@@ -61,7 +66,7 @@ public class CRC  {
      * @return The CRC code
      */
     public String calculateCode(){
-        String frame = genFrame();
+        String frame = padFrame();
 
         String subFrame = frame.substring(0,generator.length()-1);
         for (int i = generator.length()-1; i < frame.length(); i++){
@@ -72,9 +77,7 @@ public class CRC  {
                 int temp = Integer.parseInt(subFrame, 2);
                 temp = temp ^ genInt;
                 subFrame = Integer.toBinaryString(temp);
-                while (subFrame.length() < generator.length() - 1) {
-                    subFrame = "0" + subFrame;
-                }
+                subFrame = genPadding((generator.length() - 1) - subFrame.length(), '0') + subFrame;
             }
         }
         return subFrame;
