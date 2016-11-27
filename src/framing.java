@@ -15,7 +15,7 @@ import java.util.Scanner;
  */
 public class framing {
 
-    private char[] initalFrame, encodedFrame;
+    public char[] initalFrame, encodedFrame;
     private int numParityBits;
 
     /**
@@ -26,28 +26,36 @@ public class framing {
         System.out.println("Type in string");
         Scanner sc = new Scanner(System.in);
         String charString = sc.nextLine();
-        System.out.println(generateEncodedFrame(charString));
-        
+        //System.out.println(generateEncodedFrame(charString));
+
+        framing frame = new framing(charString);
+
+        System.out.println(frame.encodedFrame);
 
     }
 
-    public void framing(String input){
-        this.initalFrame = input.toCharArray();
+    public framing(String input){
+        setInitialFrame(input);
+        generateEncodedFrameSkeleton();
     }
 
-    private void calculateNumParityBits(){
-        //Parity bits are located at indexes, 2^n, so 1, 2, 4, 8, 16, 32, 64, etc... Therefore max num of bits is 7
-        for (numParityBits=0; numParityBits < 7; numParityBits++){
-            if (Math.pow(2,numParityBits) > initalFrame.length){
-                break;
-            }
-        }
+    public void setInitialFrame(String frame){
+        this.initalFrame = frame.toCharArray();
     }
 
-    private void generateEncodedFrameSkeleton(){
+    public void generateEncodedFrameSkeleton(){
+        //Parity bits are located at indexes, 2^n, so 1, 2, 4, 8, 16, 32, 64, etc...
+        numParityBits = Integer.toBinaryString(initalFrame.length).length();
         encodedFrame = new char[initalFrame.length + numParityBits];
-        for (int i=0; i <= 7; i++){
+        int currentParity = 4;
 
+        for (int i=2, index = 0; i < encodedFrame.length; i++){
+            if (i == currentParity) {
+                currentParity *= 2;
+            } else {
+                encodedFrame[i] = initalFrame[index];
+                index++;
+            }
         }
     }
 
