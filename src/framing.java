@@ -22,16 +22,9 @@ public class framing {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-      // Input the string 
-        System.out.println("Type in string");
-        Scanner sc = new Scanner(System.in);
-        String charString = sc.nextLine();
-        //System.out.println(generateEncodedFrame(charString));
-
-        framing frame = new framing(charString);
-
-        System.out.println(frame.encodedFrame);
-
+        framing frame = new framing("11111111");
+        frame.calculateParityBits();
+        System.out.println(Arrays.toString(frame.encodedFrame));
     }
 
     public framing(String input){
@@ -41,9 +34,8 @@ public class framing {
     public void setInitialFrame(String frame){
         initalFrame = new int[frame.length()];
         for (int i=0; i < frame.length(); i++) {
-            initalFrame[i] = Integer.parseInt(frame.substring(i,i));
+            initalFrame[i] = Integer.parseInt(frame.substring(i,i+1));
         }
-        calculateParityBits();
     }
 
     public void generateEncodedFrameSkeleton(){
@@ -53,7 +45,7 @@ public class framing {
         int currentParity = 4;
 
         for (int i=2, index = 0; i < encodedFrame.length; i++){
-            if (i == currentParity) {
+            if (i == currentParity-1) {
                 currentParity *= 2;
                 encodedFrame[i] = 0;
             } else {
@@ -65,11 +57,19 @@ public class framing {
 
     public void calculateParityBits(){
         generateEncodedFrameSkeleton();
-        int currentParity =1;
+        int currentParity = 1;
+        System.out.println(numParityBits);
         for (int p=0; p < numParityBits; p++){
-            for (int i=0; i < encodedFrame.length){
-
+            int paritySum = 0;
+            System.out.println();
+            for (int i=(0+currentParity-1); i < encodedFrame.length; i++){
+                System.out.println(((i)/currentParity)%2 + " " + (i+1));
+                if (((i)/currentParity-1)%2 == 0){
+                    paritySum += encodedFrame[i];
+                    System.out.println(encodedFrame[i]);
+                }
             }
+            encodedFrame[currentParity-1] = paritySum%2;
             currentParity *= 2;
         }
     }
