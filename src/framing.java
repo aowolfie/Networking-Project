@@ -15,6 +15,9 @@ import java.util.Scanner;
  */
 public class framing {
 
+    private char[] initalFrame, encodedFrame;
+    private int numParityBits;
+
     /**
      * @param args the command line arguments
      */
@@ -27,6 +30,28 @@ public class framing {
         
 
     }
+
+    public void framing(String input){
+        this.initalFrame = input.toCharArray();
+    }
+
+    private void calculateNumParityBits(){
+        //Parity bits are located at indexes, 2^n, so 1, 2, 4, 8, 16, 32, 64, etc... Therefore max num of bits is 7
+        for (numParityBits=0; numParityBits < 7; numParityBits++){
+            if (Math.pow(2,numParityBits) > initalFrame.length){
+                break;
+            }
+        }
+    }
+
+    private void generateEncodedFrameSkeleton(){
+        encodedFrame = new char[initalFrame.length + numParityBits];
+        for (int i=0; i <= 7; i++){
+
+        }
+    }
+
+
 
     public static String generateEncodedFrame(String input){
         String charString = input;
