@@ -1,6 +1,7 @@
-
+import com.sun.xml.internal.ws.util.StringUtils;
 import java.util.Arrays;
 import java.util.Scanner;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -12,13 +13,13 @@ import java.util.Scanner;
  *
  * @author Zach
  */
-public class framing {
+public class framing2 {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // Input the string 
+      // Input the string 
         System.out.println("Type in string");
         Scanner sc = new Scanner(System.in);
         String charString = sc.nextLine();
@@ -27,105 +28,175 @@ public class framing {
         char[] charArray;
         charArray = new char[23];
         
+        
         //Put in the first character
         char first = charString.charAt(0);
         charArray[2] = first;
         
-        //The starting points for the rest of the array
-        int p = 4;
-        int i = 1;
-       
-        //Fill in the array 
-        while (i < charString.length()){  
-            
-            char next = charString.charAt(i);       
-            charArray[p] = next;
-
-            char next1 = charString.charAt(i+1);       
-            charArray[p+1] = next1;
-
-            char next2 = charString.charAt(i+2);       
-            charArray[p+2] = next2;
-
-            i=i+3;
-            p=p+4;
-        }        
+        int p = 3;
+        int loop = 0;
+        int i;
+        
+        for(i=1; i<charString.length(); i++){
+           if(loop % 3 != 0){
+                char next = charString.charAt(i);       
+                charArray[p] = next;
+                p++;
+                loop++;
+           }else{
+                p = p+1;   
+                char next = charString.charAt(i);       
+                charArray[p] = next;
+                p++; 
+                loop++;
+           }
+        }
+        
         //Print Results
         System.out.println("The string: " + charString); 
         System.out.println(Arrays.toString(charArray));
         System.out.println("---------------------------------------------------------------------------------------");
-       
-        
-        //Chack parity value 1 (Position 1)
-        int parity1 = charArray[2]+charArray[4]+charArray[6]+charArray[8]+charArray[10];
-        System.out.println(parity1);
-        
-        //Check for even or odd parity
-        int parity1divided = parity1 % 61;
-        System.out.println(parity1divided);
-        
-        //Insert parity value
-        if(parity1divided == 0){
-            charArray[0] = '0';  
-        }else{
-            charArray[0] = '1';  
-        }
-        System.out.println(Arrays.toString(charArray));
-        System.out.println("---------------------------------------------------------------------------------------");
-        
-        
-        //Chack parity value 2 (Position 2)
-        int parity2 = charArray[2]+charArray[5]+charArray[6]+charArray[9]+charArray[10];
-        System.out.println(parity2);
-        
-        //Check for even or odd parity
-        int parity2divided = parity2 % 61;
-        System.out.println(parity2divided);
-        
-        //Insert parity value
-        if(parity2divided == 0){
-            charArray[1] = '0';  
-        }else{
-            charArray[1] = '1';  
-        }
-        System.out.println(Arrays.toString(charArray));
-        System.out.println("---------------------------------------------------------------------------------------");
-        
-        
-        //Chack parity value 3 (Position 4)
-        int parity3 = charArray[4]+charArray[5]+charArray[6]+charArray[11];
-        System.out.println(parity3);
-        
-        //Check for even or odd parity
-        int parity3divided = parity3 % 61;
-        System.out.println(parity3divided);
-        
-        //Insert parity value
-        if(parity3divided == 0){
-            charArray[3] = '0';  
-        }else{
-            charArray[3] = '1';  
-        }
-        System.out.println(Arrays.toString(charArray));
-        System.out.println("---------------------------------------------------------------------------------------");
-        
-        //Chack parity value 4 (Position 8)
-        int parity4 = charArray[8]+charArray[9]+charArray[10]+charArray[11];
-        System.out.println(parity4);
-        
-        //Check for even or odd parity
-        int parity4divided = parity4 % 61;
-        System.out.println(parity4divided);
-        
-        //Insert parity value
-        if(parity4divided == 0){
-            charArray[7] = '0';  
-        }else{
-            charArray[7] = '1';  
-        }
-        System.out.println(Arrays.toString(charArray));
-        System.out.println("---------------------------------------------------------------------------------------");
 
+        //Put the parity bit 1 values into an array//////////////////////////////////////////////////////////////////
+        char[] parityArray1;
+            parityArray1 = new char[11];
+            parityArray1[0] = charArray[2];
+            parityArray1[1] = charArray[4];
+            parityArray1[2] = charArray[6];
+            parityArray1[3] = charArray[8];
+            parityArray1[4] = charArray[10];
+            parityArray1[5] = charArray[12];
+            parityArray1[6] = charArray[14];
+            parityArray1[7] = charArray[16];
+            parityArray1[8] = charArray[18];
+            parityArray1[9] = charArray[20];
+            parityArray1[10] = charArray[22];
+        
+        //Cnvert the array to a stirng 
+        String parity1 =String.valueOf(parityArray1);
+        System.out.println("This is parity1: " + parity1);
+        
+        //Count the number of ones in the string
+        char lookingFor = '1';
+        int count = 0;
+        
+        for(int j=0; j < parity1.length();j++){
+            if(parity1.charAt(j) == lookingFor)
+                count+=1;
+        }
+        System.out.println(count);
+        
+        //Place the correct parity bit in the array 
+        if(count % 2 == 0){
+            charArray[0] = '0';
+        }else{
+            charArray[0] = '1';
+        }
+        
+         //Put the parity bit 2 values into an array/////////////////////////////////////////////////////////////////////
+        char[] parityArray2;
+            parityArray2 = new char[13];
+            parityArray2[0] = charArray[2];
+            parityArray2[1] = charArray[5];
+            parityArray2[2] = charArray[6];
+            parityArray2[3] = charArray[8];
+            parityArray2[4] = charArray[9];
+            parityArray2[5] = charArray[11];
+            parityArray2[6] = charArray[12];
+            parityArray2[7] = charArray[14];
+            parityArray2[8] = charArray[15];
+            parityArray2[9] = charArray[17];
+            parityArray2[10] = charArray[18];
+            parityArray2[11] = charArray[20];
+            parityArray2[12] = charArray[21];
+            
+        //Cnvert the array to a stirng 
+        String parity2 =String.valueOf(parityArray2);
+        System.out.println("This is parity2: " + parity2);
+        
+        //Count the number of ones in the string
+        count = 0;
+        
+        for(int j=0; j < parity2.length();j++){
+            if(parity2.charAt(j) == lookingFor)
+                count+=1;
+        }
+        System.out.println(count);
+        
+        //Place the correct parity bit in the array 
+        if(count % 2 == 0){
+            charArray[1] = '0';
+        }else{
+            charArray[1] = '1';
+        }
+        
+        //Put the parity bit 3 values into an array////////////////////////////////////////////////////////////////////
+        char[] parityArray3;
+            parityArray3 = new char[11];
+            parityArray3[0] = charArray[4];
+            parityArray3[1] = charArray[5];
+            parityArray3[2] = charArray[6];
+            parityArray3[3] = charArray[11];
+            parityArray3[4] = charArray[12];
+            parityArray3[5] = charArray[13];
+            parityArray3[6] = charArray[14];
+            parityArray3[7] = charArray[19];
+            parityArray3[8] = charArray[20];
+            parityArray3[9] = charArray[21];
+            parityArray3[10] = charArray[22];
+            
+            
+        //Cnvert the array to a stirng 
+        String parity3 =String.valueOf(parityArray3);
+        System.out.println("This is parity3: " + parity3);
+        
+        //Count the number of ones in the string
+        count = 0;
+        for(int j=0; j < parity3.length();j++){
+            if(parity3.charAt(j) == lookingFor)
+                count+=1;
+        }
+        System.out.println(count);
+        
+        //Place the correct parity bit in the array 
+        if(count % 2 == 0){
+            charArray[3] = '0';
+        }else{
+            charArray[3] = '1';
+        }
+        
+        //Put the parity bit 4 values into an array////////////////////////////////////////////////////////////////////
+        char[] parityArray4;
+            parityArray4 = new char[8];
+            parityArray4[0] = charArray[7];
+            parityArray4[1] = charArray[8];
+            parityArray4[2] = charArray[9];
+            parityArray4[3] = charArray[10];
+            parityArray4[4] = charArray[11];
+            parityArray4[5] = charArray[12];
+            parityArray4[6] = charArray[13];
+            parityArray4[7] = charArray[14];
+
+        //Cnvert the array to a stirng 
+        String parity4 =String.valueOf(parityArray4);
+        System.out.println("This is parity4: " + parity4);
+        
+        //Count the number of ones in the string
+        count = 0;
+        for(int j=0; j < parity4.length();j++){
+            if(parity4.charAt(j) == lookingFor)
+                count+=1;
+        }
+        System.out.println(count);
+        
+        //Place the correct parity bit in the array 
+        if(count % 2 == 0){
+            charArray[7] = '0';
+        }else{
+            charArray[7] = '1';
+        }
+        
+        System.out.println(Arrays.toString(charArray));
     }
     
 }
