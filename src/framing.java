@@ -15,7 +15,7 @@ import java.util.Scanner;
  */
 public class framing {
 
-    public char[] initalFrame, encodedFrame;
+    public int[] initalFrame, encodedFrame;
     private int numParityBits;
 
     /**
@@ -36,26 +36,41 @@ public class framing {
 
     public framing(String input){
         setInitialFrame(input);
-        generateEncodedFrameSkeleton();
     }
 
     public void setInitialFrame(String frame){
-        this.initalFrame = frame.toCharArray();
+        initalFrame = new int[frame.length()];
+        for (int i=0; i < frame.length(); i++) {
+            initalFrame[i] = Integer.parseInt(frame.substring(i,i));
+        }
+        calculateParityBits();
     }
 
     public void generateEncodedFrameSkeleton(){
         //Parity bits are located at indexes, 2^n, so 1, 2, 4, 8, 16, 32, 64, etc...
         numParityBits = Integer.toBinaryString(initalFrame.length).length();
-        encodedFrame = new char[initalFrame.length + numParityBits];
+        encodedFrame = new int[initalFrame.length + numParityBits];
         int currentParity = 4;
 
         for (int i=2, index = 0; i < encodedFrame.length; i++){
             if (i == currentParity) {
                 currentParity *= 2;
+                encodedFrame[i] = 0;
             } else {
                 encodedFrame[i] = initalFrame[index];
                 index++;
             }
+        }
+    }
+
+    public void calculateParityBits(){
+        generateEncodedFrameSkeleton();
+        int currentParity =1;
+        for (int p=0; p < numParityBits; p++){
+            for (int i=0; i < encodedFrame.length){
+
+            }
+            currentParity *= 2;
         }
     }
 
