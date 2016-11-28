@@ -1,4 +1,6 @@
 import com.sun.xml.internal.ws.util.StringUtils;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -15,14 +17,17 @@ import java.util.Scanner;
  */
 public class framing {
 
-    public int[] initalFrame, encodedFrame;
+    public Integer[] encodedFrame;
+    public int[] initalFrame;
     private int numParityBits;
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        framing frame = new framing("11111111");
+        framing frame = new framing("1101001100110101");
+        frame.generateEncodedFrameSkeleton();
+        System.out.println(Arrays.toString(frame.encodedFrame));
         frame.calculateParityBits();
         System.out.println(Arrays.toString(frame.encodedFrame));
     }
@@ -39,38 +44,36 @@ public class framing {
     }
 
     public void generateEncodedFrameSkeleton(){
-        //Parity bits are located at indexes, 2^n, so 1, 2, 4, 8, 16, 32, 64, etc...
-        numParityBits = Integer.toBinaryString(initalFrame.length).length();
-        encodedFrame = new int[initalFrame.length + numParityBits];
-        int currentParity = 4;
-
-        for (int i=2, index = 0; i < encodedFrame.length; i++){
-            if (i == currentParity-1) {
-                currentParity *= 2;
-                encodedFrame[i] = 0;
-            } else {
-                encodedFrame[i] = initalFrame[index];
-                index++;
+        ArrayList<Integer> temp = new ArrayList<>();
+        temp.add(0);
+        numParityBits = 1;
+        int nextParity = 2;
+        for (int i=0; i < initalFrame.length; i++){
+            if (i + numParityBits + 1 == nextParity) {
+                temp.add(0);
+                numParityBits++;
+                nextParity *= 2;
             }
+            temp.add(initalFrame[i]);
         }
+        encodedFrame = temp.toArray(new Integer[temp.size()]);
     }
 
     public void calculateParityBits(){
-        generateEncodedFrameSkeleton();
-        int currentParity = 1;
-        System.out.println(numParityBits);
-        for (int p=0; p < numParityBits; p++){
-            int paritySum = 0;
+        int parityIndex = 1;
+
+        for (int p = 1; p <= numParityBits; p++){
+            int parityValue = 0;
             System.out.println();
-            for (int i=(0+currentParity-1); i < encodedFrame.length; i++){
-                System.out.println(((i)/currentParity)%2 + " " + (i+1));
-                if (((i)/currentParity-1)%2 == 0){
-                    paritySum += encodedFrame[i];
-                    System.out.println(encodedFrame[i]);
+            for (int i = parityIndex -1; i < encodedFrame.length; i++){
+                    System.out.println((i/p)%2);
+                if ((i/p)%2 == 0){
+                    parityValue += encodedFrame[i];
+                    //System.out.println("{" + encodedFrame[i] + "}");
                 }
             }
-            encodedFrame[currentParity-1] = paritySum%2;
-            currentParity *= 2;
+            encodedFrame[parityIndex - 1] = (parityValue) % 2;
+            parityIndex *= 2;
         }
     }
 
