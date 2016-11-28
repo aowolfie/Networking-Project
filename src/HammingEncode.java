@@ -4,7 +4,7 @@ import java.util.ArrayList;
  *
  * @author Zach
  */
-public class framing {
+public class HammingEncode {
 
     private Integer[] encodedFrame;
     private int[] initialFrame;
@@ -12,7 +12,7 @@ public class framing {
 
     //Testing main method
     public static void main(String[] args) {
-        framing frame = new framing("11111111");
+        HammingEncode frame = new HammingEncode("11111111");
         System.out.println(frame.encodeFrame());
     }
 
@@ -21,7 +21,7 @@ public class framing {
      * @param input The frame to be encoded
      * @throws NumberFormatException In case an invalid string is input
      */
-    public framing(String input) throws NumberFormatException{
+    public HammingEncode(String input) throws NumberFormatException{
         setInitialFrame(input);
         encodeFrame();
     }
