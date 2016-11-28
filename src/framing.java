@@ -25,7 +25,7 @@ public class framing {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        framing frame = new framing("1101001100110101");
+        framing frame = new framing("11111111");
         frame.generateEncodedFrameSkeleton();
         System.out.println(Arrays.toString(frame.encodedFrame));
         frame.calculateParityBits();
@@ -65,13 +65,15 @@ public class framing {
         for (int p = 1; p <= numParityBits; p++){
             int parityValue = 0;
             System.out.println();
-            for (int i = parityIndex -1; i < encodedFrame.length; i++){
-                    System.out.println((i/p)%2);
-                if ((i/p)%2 == 0){
+            for (int i = parityIndex - 1; i < encodedFrame.length; i++){
+                int val = ((i-parityIndex+1)/parityIndex)%2;
+                System.out.println(val);
+                if (val == 0){
+                    System.out.println("[" + i+ "]");
                     parityValue += encodedFrame[i];
-                    //System.out.println("{" + encodedFrame[i] + "}");
                 }
             }
+            System.out.println(parityValue);
             encodedFrame[parityIndex - 1] = (parityValue) % 2;
             parityIndex *= 2;
         }
