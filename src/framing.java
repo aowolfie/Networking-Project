@@ -1,15 +1,4 @@
-import com.sun.xml.internal.ws.util.StringUtils;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
-
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  *
@@ -17,247 +6,115 @@ import java.util.Scanner;
  */
 public class framing {
 
-    public Integer[] encodedFrame;
-    public int[] initalFrame;
+    private Integer[] encodedFrame;
+    private int[] initialFrame;
     private int numParityBits;
 
-    /**
-     * @param args the command line arguments
-     */
+    //Testing main method
     public static void main(String[] args) {
         framing frame = new framing("11111111");
-        frame.generateEncodedFrameSkeleton();
-        System.out.println(Arrays.toString(frame.encodedFrame));
-        frame.calculateParityBits();
-        System.out.println(Arrays.toString(frame.encodedFrame));
+        System.out.println(frame.encodeFrame());
     }
 
-    public framing(String input){
+    /**
+     * Requires input because so we have values to return
+     * @param input The frame to be encoded
+     * @throws NumberFormatException In case an invalid string is input
+     */
+    public framing(String input) throws NumberFormatException{
         setInitialFrame(input);
+        encodeFrame();
     }
 
-    public void setInitialFrame(String frame){
-        initalFrame = new int[frame.length()];
+    /**
+     * Used to set the initial frame.
+     * This converts the string into an int array and checks to see
+     * if the string is valid.
+     * @param frame The frame to be encoded
+     * @throws NumberFormatException In case an invalid string is input
+     */
+    public void setInitialFrame(String frame) throws NumberFormatException {
+        Integer.parseInt(frame, 2);
+        initialFrame = new int[frame.length()];
         for (int i=0; i < frame.length(); i++) {
-            initalFrame[i] = Integer.parseInt(frame.substring(i,i+1));
+            initialFrame[i] = Integer.parseInt(frame.substring(i,i+1));
         }
     }
 
-    public void generateEncodedFrameSkeleton(){
+    /**
+     * Uses the inputted frame to generate the encoded frame skeleton
+     */
+    private void generateEncodedFrameSkeleton(){
         ArrayList<Integer> temp = new ArrayList<>();
         temp.add(0);
         numParityBits = 1;
         int nextParity = 2;
-        for (int i=0; i < initalFrame.length; i++){
+        for (int i = 0; i < initialFrame.length; i++){
             if (i + numParityBits + 1 == nextParity) {
                 temp.add(0);
                 numParityBits++;
                 nextParity *= 2;
             }
-            temp.add(initalFrame[i]);
+            temp.add(initialFrame[i]);
         }
         encodedFrame = temp.toArray(new Integer[temp.size()]);
     }
 
-    public void calculateParityBits(){
+    /**
+     * Using the generated frame skeleton this calculates the parity bits
+     */
+    private void calculateParityBits(){
         int parityIndex = 1;
 
         for (int p = 1; p <= numParityBits; p++){
+
             int parityValue = 0;
-            System.out.println();
+
             for (int i = parityIndex - 1; i < encodedFrame.length; i++){
-                int val = ((i-parityIndex+1)/parityIndex)%2;
-                System.out.println(val);
-                if (val == 0){
-                    System.out.println("[" + i+ "]");
+                if (((i-parityIndex+1)/parityIndex)%2 == 0){
                     parityValue += encodedFrame[i];
                 }
             }
-            System.out.println(parityValue);
+
             encodedFrame[parityIndex - 1] = (parityValue) % 2;
             parityIndex *= 2;
         }
     }
 
+    /**
+     * Encodes the frame and returns the value
+     * @return The encoded frame
+     */
+    public String encodeFrame(){
+        generateEncodedFrameSkeleton();
+        calculateParityBits();
+        return toString();
+    }
 
-
-    public static String generateEncodedFrame(String input){
-        String charString = input;
-
-        //Create an Array
-        char[] charArray;
-        charArray = new char[23];
-
-
-        //Put in the first character
-        char first = charString.charAt(0);
-        charArray[2] = first;
-
-        int p = 3;
-        int loop = 0;
-        int i;
-
-        for(i=1; i<charString.length(); i++){
-            if(loop % 3 != 0){
-                char next = charString.charAt(i);
-                charArray[p] = next;
-                p++;
-                loop++;
-            }else{
-                p = p+1;
-                char next = charString.charAt(i);
-                charArray[p] = next;
-                p++;
-                loop++;
-            }
+    /**
+     * Encodes the given frame and returns the encoded string
+     * @param frame The frame to be encoded
+     * @return The encoded frame
+     */
+    public String encodeFrame(String frame){
+        try {
+            setInitialFrame(frame);
+        } catch (NumberFormatException e){
+            return "";
         }
+        return encodeFrame();
+    }
 
-        //Print Results
-        System.out.println("The string: " + charString);
-        System.out.println(Arrays.toString(charArray));
-        System.out.println("---------------------------------------------------------------------------------------");
-
-        //Put the parity bit 1 values into an array//////////////////////////////////////////////////////////////////
-        char[] parityArray1;
-        parityArray1 = new char[11];
-        parityArray1[0] = charArray[2];
-        parityArray1[1] = charArray[4];
-        parityArray1[2] = charArray[6];
-        parityArray1[3] = charArray[8];
-        parityArray1[4] = charArray[10];
-        parityArray1[5] = charArray[12];
-        parityArray1[6] = charArray[14];
-        parityArray1[7] = charArray[16];
-        parityArray1[8] = charArray[18];
-        parityArray1[9] = charArray[20];
-        parityArray1[10] = charArray[22];
-
-        //Cnvert the array to a stirng
-        String parity1 =String.valueOf(parityArray1);
-        System.out.println("This is parity1: " + parity1);
-
-        //Count the number of ones in the string
-        char lookingFor = '1';
-        int count = 0;
-
-        for(int j=0; j < parity1.length();j++){
-            if(parity1.charAt(j) == lookingFor)
-                count+=1;
+    /**
+     * Converts our encoded int array to a string
+     * @return The encoded frame as a String
+     */
+    @Override
+    public String toString() {
+        String out = "";
+        for (int i: encodedFrame){
+            out += i;
         }
-        System.out.println(count);
-
-        //Place the correct parity bit in the array
-        if(count % 2 == 0){
-            charArray[0] = '0';
-        }else{
-            charArray[0] = '1';
-        }
-
-        //Put the parity bit 2 values into an array/////////////////////////////////////////////////////////////////////
-        char[] parityArray2;
-        parityArray2 = new char[13];
-        parityArray2[0] = charArray[2];
-        parityArray2[1] = charArray[5];
-        parityArray2[2] = charArray[6];
-        parityArray2[3] = charArray[8];
-        parityArray2[4] = charArray[9];
-        parityArray2[5] = charArray[11];
-        parityArray2[6] = charArray[12];
-        parityArray2[7] = charArray[14];
-        parityArray2[8] = charArray[15];
-        parityArray2[9] = charArray[17];
-        parityArray2[10] = charArray[18];
-        parityArray2[11] = charArray[20];
-        parityArray2[12] = charArray[21];
-
-        //Cnvert the array to a stirng
-        String parity2 =String.valueOf(parityArray2);
-        System.out.println("This is parity2: " + parity2);
-
-        //Count the number of ones in the string
-        count = 0;
-
-        for(int j=0; j < parity2.length();j++){
-            if(parity2.charAt(j) == lookingFor)
-                count+=1;
-        }
-        System.out.println(count);
-
-        //Place the correct parity bit in the array
-        if(count % 2 == 0){
-            charArray[1] = '0';
-        }else{
-            charArray[1] = '1';
-        }
-
-        //Put the parity bit 3 values into an array////////////////////////////////////////////////////////////////////
-        char[] parityArray3;
-        parityArray3 = new char[11];
-        parityArray3[0] = charArray[4];
-        parityArray3[1] = charArray[5];
-        parityArray3[2] = charArray[6];
-        parityArray3[3] = charArray[11];
-        parityArray3[4] = charArray[12];
-        parityArray3[5] = charArray[13];
-        parityArray3[6] = charArray[14];
-        parityArray3[7] = charArray[19];
-        parityArray3[8] = charArray[20];
-        parityArray3[9] = charArray[21];
-        parityArray3[10] = charArray[22];
-
-
-        //Cnvert the array to a stirng
-        String parity3 =String.valueOf(parityArray3);
-        System.out.println("This is parity3: " + parity3);
-
-        //Count the number of ones in the string
-        count = 0;
-        for(int j=0; j < parity3.length();j++){
-            if(parity3.charAt(j) == lookingFor)
-                count+=1;
-        }
-        System.out.println(count);
-
-        //Place the correct parity bit in the array
-        if(count % 2 == 0){
-            charArray[3] = '0';
-        }else{
-            charArray[3] = '1';
-        }
-
-        //Put the parity bit 4 values into an array////////////////////////////////////////////////////////////////////
-        char[] parityArray4;
-        parityArray4 = new char[8];
-        parityArray4[0] = charArray[7];
-        parityArray4[1] = charArray[8];
-        parityArray4[2] = charArray[9];
-        parityArray4[3] = charArray[10];
-        parityArray4[4] = charArray[11];
-        parityArray4[5] = charArray[12];
-        parityArray4[6] = charArray[13];
-        parityArray4[7] = charArray[14];
-
-        //Cnvert the array to a stirng
-        String parity4 =String.valueOf(parityArray4);
-        System.out.println("This is parity4: " + parity4);
-
-        //Count the number of ones in the string
-        count = 0;
-        for(int j=0; j < parity4.length();j++){
-            if(parity4.charAt(j) == lookingFor)
-                count+=1;
-        }
-        System.out.println(count);
-
-        //Place the correct parity bit in the array
-        if(count % 2 == 0){
-            charArray[7] = '0';
-        }else{
-            charArray[7] = '1';
-        }
-
-        System.out.println(Arrays.toString(charArray));
-
-        return null;
+        return out;
     }
 }
