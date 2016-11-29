@@ -8,12 +8,12 @@ import java.util.*;
 class HammingCheck {
 	public static void main(String args[]) {
 		Scanner scan = new Scanner(System.in);
-		System.out.println("Enter the number of bits for the Hamming data:");
+		System.out.println("Enter the amount of bits you want to check:");
 		int n = scan.nextInt();
 		int a[] = new int[n];
 		
 		for(int i=0 ; i < n ; i++) {
-			System.out.println("Enter bit no. " + (n-i) + ":");
+			System.out.println("Enter the bit number: " + (n-i) + ":");
 			a[n-i-1] = scan.nextInt();
 		}
 		
@@ -25,19 +25,19 @@ class HammingCheck {
 		
 		int b[] = generateCode(a);
 		
-		System.out.println("Generated code is:");
+		System.out.println("The Generated Hamming code is:");
 		for(int i=0 ; i < b.length ; i++) {
 			System.out.print(b[b.length-i-1]);
 		}
 		System.out.println();
 		 
-		// Finding the difference between the original and new array will give the number of parity bits needed
-		System.out.println("Enter position of a bit to alter to check for error detection at the receiver end (0 for no error):");
+		// Find the difference between the original and new array will give how many parity bits are needed
+		System.out.println("Enter the position of a bit to check for error detection:";
 		int error = scan.nextInt();
 		if(error != 0) {
 			b[error-1] = (b[error-1]+1)%2;
 		}
-		System.out.println("Sent code is:");
+		System.out.println("Input is:");
 		for(int i=0 ; i < b.length ; i++) {
 			System.out.print(b[b.length-i-1]);
 		}
@@ -151,20 +151,20 @@ class HammingCheck {
 		
 		int error_location = Integer.parseInt(errorLocation 8, 2);
 		if(error_location != 0) {
-			System.out.println("Error is at location " + error_location + ".");
+			System.out.println("Found error at: " + error_location + ".");
 			a[error_location-1] = (a[error_location-1]+1)%2;
-			System.out.println("Corrected code is:");
+			System.out.println("The correct code is:");
 			for(int i=0 ; i < a.length ; i++) {
 				System.out.print(a[a.length-i-1]);
 			}
 			System.out.println();
 		}
 		else {
-			System.out.println("There is no error in the received data.");
+			System.out.println("There are no errors in the received data.");
 		}
 		
 		// Extract the original data from the received (and corrected) code:
-		System.out.println("Original data sent was:");
+		System.out.println("Original input is:");
 		power = parity_count-1;
 		for(int i=a.length ; i > 0 ; i--) {
 			if(Math.pow(2, power) != i) {
