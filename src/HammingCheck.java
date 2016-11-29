@@ -30,8 +30,8 @@ class HammingCheck {
 			System.out.print(b[b.length-i-1]);
 		}
 		System.out.println();
-		
-		// Difference in the sizes of original and new array will give us the number of parity bits added.
+		 
+		// Finding the difference between the original and new array will give the number of parity bits needed
 		System.out.println("Enter position of a bit to alter to check for error detection at the receiver end (0 for no error):");
 		int error = scan.nextInt();
 		if(error != 0) {
