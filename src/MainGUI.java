@@ -1,8 +1,6 @@
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 /**
  * Created by Brandon on 11/26/2016.
@@ -14,8 +12,8 @@ public class MainGUI {
     private JTextField CRCFrameInput;
     private JTextField CRCGeneratorInput;
     private JPanel MainJPanel;
-    private JTextField textField4;
-    private JTextField textField5;
+    private JTextField hammingDecodeOutput;
+    private JTextField hammingDecodeInput;
     private JTextField hammingEncodeOutput;
     private JTextField hammingEncodeInput;
     private JTextField CRCFrameOutput;
@@ -100,6 +98,25 @@ public class MainGUI {
             }
         });
 
+        hammingDecodeInput.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent de) {
+                updateHammingEncode();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                updateHammingEncode();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent de) {
+                updateHammingEncode();
+            }
+        });
+
+
     }
 
     /**
@@ -111,7 +128,17 @@ public class MainGUI {
           code = "ERROR!";
         }
         hammingEncodeOutput.setText(code);
-        hammingEncodeOutput.setText(code);
+    }
+
+    /**
+     * Helper method that is used to update the Hamming Decode textField
+     */
+    private void updateHammingDecode(){
+        /*
+           Place update code here
+           hammingDecodeInput is the input
+           hammingDecodeOutput is the output
+         */
     }
 
     /**
