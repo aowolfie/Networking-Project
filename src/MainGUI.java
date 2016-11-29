@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -14,10 +16,11 @@ public class MainGUI {
     private JPanel MainJPanel;
     private JTextField textField4;
     private JTextField textField5;
-    private JTextField textField6;
-    private JTextField textField7;
+    private JTextField hammingEncodeOutput;
+    private JTextField hammingEncodeInput;
     private JTextField CRCFrameOutput;
     private CRC CRCEncoder;
+    private HammingEncode hammingEncoder;
 
     /**
      * Used to launch the GUI
@@ -36,22 +39,79 @@ public class MainGUI {
      * Constructor
      */
     public MainGUI() {
+
         CRCEncoder = new CRC(CRCFrameInput.getText(), CRCGeneratorInput.getText());
         updateCRC();
-        CRCFrameInput.addKeyListener(new KeyAdapter() {
+
+        hammingEncoder = new HammingEncode(hammingEncodeInput.getText());
+        hammingEncodeOutput.setText(hammingEncoder.encodeFrame());
+
+        CRCFrameInput.getDocument().addDocumentListener(new DocumentListener() {
+
             @Override
-            public void keyTyped(KeyEvent e) {
-                super.keyTyped(e);
+            public void insertUpdate(DocumentEvent de) {
+                updateCRC();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                updateCRC();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent de) {
                 updateCRC();
             }
         });
-        CRCGeneratorInput.addKeyListener(new KeyAdapter() {
+
+        CRCGeneratorInput.getDocument().addDocumentListener(new DocumentListener() {
+
             @Override
-            public void keyTyped(KeyEvent e) {
-                super.keyTyped(e);
+            public void insertUpdate(DocumentEvent de) {
+                updateCRC();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                updateCRC();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent de) {
                 updateCRC();
             }
         });
+
+        hammingEncodeInput.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent de) {
+                updateHammingEncode();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                updateHammingEncode();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent de) {
+                updateHammingEncode();
+            }
+        });
+
+    }
+
+    /**
+     * Helper method that is used to update the Hamming Encode textField
+     */
+    private void updateHammingEncode(){
+        String code = hammingEncoder.encodeFrame(hammingEncodeInput.getText());
+        if (code.equals("")){
+          code = "ERROR!";
+        }
+        hammingEncodeOutput.setText(code);
+        hammingEncodeOutput.setText(code);
     }
 
     /**
