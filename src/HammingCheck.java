@@ -4,11 +4,17 @@
  */
 
 class HammingCheck {
+
+    private int[] encodedFrame, decodedFrame;
+    private int numParityBits;
+
 	public static void main(String args[]) {
-        String in = "1101001100110101";
+        String in = "110011101111";
         HammingEncode encode = new HammingEncode(in);
         System.out.println(calculateNumParityBits("0 1 1 1 001 1 0011001 1 10101"));
-        System.out.println(receive(nomString("011100110011001110101"),encode.getNumParityBits()));
+        HammingCheck check = new HammingCheck();
+        check.setInitialFrame(in);
+        System.out.println(check.calculateOriginal());
     }
 
     //Add a method to calculate the number of parity bits in the inputted string
@@ -21,6 +27,23 @@ class HammingCheck {
         }
         System.out.println("======");
         return out;
+    }
+
+    /**
+     * Used to set the initial frame.
+     * This converts the string into an int array and checks to see
+     * if the string is valid.
+     * @param frame The frame to be encoded
+     * @throws NumberFormatException In case an invalid string is input
+     */
+    public void setInitialFrame(String frame) throws NumberFormatException {
+        encodedFrame = new int[frame.length()];
+        for (int i=0; i < frame.length(); i++) {
+            encodedFrame[i] = Integer.parseInt(frame.substring(i,i+1));
+            if (!(encodedFrame[i] == 0 || encodedFrame[i]  == 1)){
+                throw new NumberFormatException();
+            }
+        }
     }
 
     public static String decode(String frame){
@@ -46,6 +69,59 @@ class HammingCheck {
             }
         }
         return parityIndex;
+    }
+
+    public void newCalculateParityBits(){
+        int parityNum = 1;
+        numParityBits = 1;
+        for (int i=0; i < encodedFrame.length -1; i++){
+            if (i+1 == parityNum) {
+                parityNum *= 2;
+                numParityBits++;
+            }
+        }
+    }
+
+
+    public String calculateOriginal(){
+        newCalculateParityBits();
+        int parityIndex = 1;
+        int errorIndex = 0;
+        for (int p = 1; p < numParityBits; p++){
+
+            int parityValue = 0;
+
+            for (int i = parityIndex - 1; i < encodedFrame.length; i++){
+                if (((i-parityIndex+1)/parityIndex)%2 == 0){
+                    parityValue += encodedFrame[i];
+                }
+            }
+
+            System.out.println(parityValue);
+            if (encodedFrame[parityIndex - 1] != (parityValue) % 2){
+                System.out.println("Error detected!");
+                errorIndex += parityIndex;
+            }
+
+            parityIndex *= 2;
+        }
+
+        System.out.println(errorIndex);
+
+        if (errorIndex > 0) {
+            encodedFrame[errorIndex - 1] = (encodedFrame[errorIndex - 1] + 1) % 2;
+        }
+        String out = "";
+        int currentParity = 1;
+        for (int i = 0; i < encodedFrame.length; i++){
+            if (i + 1 == currentParity) {
+                currentParity *= 2;
+            } else {
+                out += encodedFrame[i];
+            }
+        }
+
+        return out;
     }
 
 	static String receive(int a[], int parity_count) {
