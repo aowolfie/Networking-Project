@@ -107,6 +107,10 @@ public class HammingEncode {
         return encodeFrame();
     }
 
+    public int getNumParityBits(){
+        return this.numParityBits;
+    }
+
     /**
      * Converts our encoded int array to a string
      * @return The encoded frame as a String

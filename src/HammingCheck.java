@@ -7,43 +7,57 @@ import java.util.*;
 
 class HammingCheck {
 	public static void main(String args[]) {
-		Scanner scan = new Scanner(System.in);
-		System.out.println("Enter the amount of bits you want to check:");
-		int n = scan.nextInt();
-		int a[] = new int[n];
-		
-		for(int i=0 ; i < n ; i++) {
-			System.out.println("Enter the bit number: " + (n-i) + ":");
-			a[n-i-1] = scan.nextInt();
-		}
-		
-		System.out.println("You entered:");
-		for(int i=0 ; i < n ; i++) {
-			System.out.print(a[n-i-1]);
-		}
-		System.out.println();
-		
-		int b[] = generateCode(a);
-		
-		System.out.println("The Generated Hamming code is:");
-		for(int i=0 ; i < b.length ; i++) {
-			System.out.print(b[b.length-i-1]);
-		}
-		System.out.println();
-		 
-		// Find the difference between the original and new array will give how many parity bits are needed
-		System.out.println("Enter the position of a bit to check for error detection:");
-		int error = scan.nextInt();
-		if(error != 0) {
-			b[error-1] = (b[error-1]+1)%2;
-		}
-		System.out.println("Input is:");
-		for(int i=0 ; i < b.length ; i++) {
-			System.out.print(b[b.length-i-1]);
-		}
-		System.out.println();
-		receive(b, b.length - a.length);
+        String in = "1101001100110101";
+        HammingEncode encode = new HammingEncode(in);
+        receive(nomString("011100110011001110101"),encode.getNumParityBits());
+    }
+
+	private static void miniMain(){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter the amount of bits you want to check:");
+        int n = scan.nextInt();
+        int a[] = new int[n];
+
+        for(int i=0 ; i < n ; i++) {
+            System.out.println("Enter the bit number: " + (n-i) + ":");
+            a[n-i-1] = scan.nextInt();
+        }
+
+        System.out.println("You entered:");
+        for(int i=0 ; i < n ; i++) {
+            System.out.print(a[n-i-1]);
+        }
+        System.out.println();
+
+        int b[] = generateCode(a);
+
+        System.out.println("The Generated Hamming code is:");
+        for(int i=0 ; i < b.length ; i++) {
+            System.out.print(b[b.length-i-1]);
+        }
+        System.out.println();
+
+        // Find the difference between the original and new array will give how many parity bits are needed
+        System.out.println("Enter the position of a bit to check for error detection:");
+        int error = scan.nextInt();
+        if(error != 0) {
+            b[error-1] = (b[error-1]+1)%2;
+        }
+        System.out.println("Input is:");
+        for(int i=0 ; i < b.length ; i++) {
+            System.out.print(b[b.length-i-1]);
+        }
+        System.out.println();
+        receive(b, b.length - a.length);
 	}
+
+    private static int[] nomString(String input){
+        int[] out = new int[input.length()];
+        for (int i=0; i < input.length(); i++){
+            out[i] = Integer.parseInt(input.substring(i,i+1));
+        }
+        return out;
+    }
 	
 	static int[] generateCode(int a[]) {
 		// Return the array 'b'.
@@ -115,7 +129,7 @@ class HammingCheck {
 		return parity;
 	}
 	
-	static void receive(int a[], int parity_count) {
+	static String receive(int a[], int parity_count) {
 		// This is the receiver code. It receives a Hamming code in array 'a'.
 		// We also require the number of parity bits added to the original data.
 		// Now it must detect the error and correct it, if any.
@@ -131,10 +145,8 @@ class HammingCheck {
 		
 		for(power=0 ; power < parity_count ; power++) {
 		// Need to check the parities the same no of times as the no of parity bits added.
-			
 			for(int i=0 ; i < a.length ; i++) {
 				// Extracting the bit from 2^(power):
-				
 				int k = i+1;
 				String s = Integer.toBinaryString(k);
 				int bit = ((Integer.parseInt(s))/((int) Math.pow(10, power)))%10;
@@ -146,34 +158,29 @@ class HammingCheck {
 			}
 			errorLocation  = parity[power] + errorLocation ;
 		}
+
 		// This gives us the parity check equation values.
 		// Check if there is a single bit error and then correct it.
-		
 		int error_location = Integer.parseInt(errorLocation, 2);
 		if(error_location != 0) {
-			System.out.println("Found error at: " + error_location + ".");
 			a[error_location-1] = (a[error_location-1]+1)%2;
-			System.out.println("The correct code is:");
 			for(int i=0 ; i < a.length ; i++) {
-				System.out.print(a[a.length-i-1]);
 			}
-			System.out.println();
 		}
-		else {
-			System.out.println("There are no errors in the received data.");
-		}
-		
+
 		// Extract the original data from the received (and corrected) code:
-		System.out.println("Original input is:");
-		power = parity_count-1;
+        String out = "";
+        power = parity_count-1;
 		for(int i=a.length ; i > 0 ; i--) {
 			if(Math.pow(2, power) != i) {
-				System.out.print(a[i-1]);
+                out += a[i-1];
 			}
 			else {
 				power--;
 			}
 		}
-		System.out.println();
+
+        //Reverse the output because it was printing out of order for some reason.
+        return new StringBuilder(out).reverse().toString();
 	}
 }
