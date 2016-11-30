@@ -32,7 +32,7 @@ class HammingCheck {
 		System.out.println();
 		 
 		// Find the difference between the original and new array will give how many parity bits are needed
-		System.out.println("Enter the position of a bit to check for error detection:";
+		System.out.println("Enter the position of a bit to check for error detection:");
 		int error = scan.nextInt();
 		if(error != 0) {
 			b[error-1] = (b[error-1]+1)%2;
@@ -149,7 +149,7 @@ class HammingCheck {
 		// This gives us the parity check equation values.
 		// Check if there is a single bit error and then correct it.
 		
-		int error_location = Integer.parseInt(errorLocation 8, 2);
+		int error_location = Integer.parseInt(errorLocation, 2);
 		if(error_location != 0) {
 			System.out.println("Found error at: " + error_location + ".");
 			a[error_location-1] = (a[error_location-1]+1)%2;
@@ -176,5 +176,4 @@ class HammingCheck {
 		}
 		System.out.println();
 	}
-}
 }

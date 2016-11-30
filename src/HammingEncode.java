@@ -34,10 +34,12 @@ public class HammingEncode {
      * @throws NumberFormatException In case an invalid string is input
      */
     public void setInitialFrame(String frame) throws NumberFormatException {
-        Integer.parseInt(frame, 2);
         initialFrame = new int[frame.length()];
         for (int i=0; i < frame.length(); i++) {
             initialFrame[i] = Integer.parseInt(frame.substring(i,i+1));
+            if (!(initialFrame[i] == 0 || initialFrame[i]  == 1)){
+                throw new NumberFormatException();
+            }
         }
     }
 
