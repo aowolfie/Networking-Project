@@ -1,25 +1,53 @@
-
 /**
  *
  * @author Adam
  */
-import java.util.*;
 
 class HammingCheck {
 	public static void main(String args[]) {
         String in = "1101001100110101";
         HammingEncode encode = new HammingEncode(in);
+        System.out.println(calculateNumParityBits("0 1 1 1 001 1 0011001 1 10101"));
         System.out.println(receive(nomString("011100110011001110101"),encode.getNumParityBits()));
     }
+
+    //Add a method to calculate the number of parity bits in the inputted string
 
     private static int[] nomString(String input){
         int[] out = new int[input.length()];
         for (int i=0; i < input.length(); i++){
             out[i] = Integer.parseInt(input.substring(i,i+1));
+            System.out.print(out[i]);
         }
+        System.out.println("======");
         return out;
     }
-	
+
+    public static String decode(String frame){
+        for (char c: frame.toCharArray()){
+            if (!(c == '1' || c =='0')){
+                return "";
+            }
+        }
+        return HammingCheck.receive(nomString(frame),calculateNumParityBits(frame));
+    }
+
+    /**
+     * Calculates the number of parity bits in the encoded string
+     */
+    private static int calculateNumParityBits(String in){
+        int parityIndex = 1;
+        int parityNum = 1;
+
+        for (int i=0; i < in.length() -1; i++){
+            if (i+1 == parityNum) {
+                parityNum *= 2;
+                parityIndex++;
+            }
+        }
+        return parityIndex;
+    }
+
 	static String receive(int a[], int parity_count) {
 		// This is the receiver code. It receives a Hamming code in array 'a'.
 		// We also require the number of parity bits added to the original data.

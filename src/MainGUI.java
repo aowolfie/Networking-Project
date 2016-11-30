@@ -102,17 +102,17 @@ public class MainGUI {
 
             @Override
             public void insertUpdate(DocumentEvent de) {
-                updateHammingEncode();
+                updateHammingDecode();
             }
 
             @Override
             public void removeUpdate(DocumentEvent de) {
-                updateHammingEncode();
+                updateHammingDecode();
             }
 
             @Override
             public void changedUpdate(DocumentEvent de) {
-                updateHammingEncode();
+                updateHammingDecode();
             }
         });
 
@@ -134,11 +134,8 @@ public class MainGUI {
      * Helper method that is used to update the Hamming Decode textField
      */
     private void updateHammingDecode(){
-        /*
-           Place update code here
-           hammingDecodeInput is the input
-           hammingDecodeOutput is the output
-         */
+        System.out.println("Yay!");
+        hammingDecodeOutput.setText(HammingCheck.decode(hammingDecodeInput.getText()));
     }
 
     /**
