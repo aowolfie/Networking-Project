@@ -8,19 +8,19 @@ import java.util.Random;
 public class Main {
     public static void main (String[] args){
         System.out.println("Hello World");
-        test(90);
+        test(64);
     }
 
     public static void test(int max){
         HammingEncode encode = new HammingEncode("101");
         HammingDecode decode = new HammingDecode("101");
-        for (int i=10; i < max; i++){
+        for (int i=1; i <= max; i++){
             String code = generate(i);
             boolean fail = false;
 
             String encodedCode = encode.encodeFrame(code);
             String decodedCode = decode.decodeFrame(encodedCode);
-            String corruptedCode = corrupt(code);
+            String corruptedCode = corrupt(encodedCode);
             String fixedCode = decode.decodeFrame(corruptedCode);
 
             if (!decodedCode.equals(code)){
@@ -49,21 +49,20 @@ public class Main {
         int pos = (int) (frame.length() * Math.random());
         System.out.println("Pos" + pos);
         StringBuilder out = new StringBuilder(frame);
-        if (frame.charAt(2) == '0'){
-            out.setCharAt(2, '1');
+        if (frame.charAt(pos) == '0'){
+            out.setCharAt(pos, '1');
         } else {
-            out.setCharAt(2, '0');
+            out.setCharAt(pos, '0');
         }
         return out.toString();
     }
 
     private static String generate(int length){
         Random rand = new Random();
-        String out = "1";
+        String out = "";
         for (int i=0; i < length; i++){
             out += (rand.nextInt(5) % 2);
         }
-        out += "1";
         return out;
     }
 }
