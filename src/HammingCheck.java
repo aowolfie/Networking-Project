@@ -9,9 +9,8 @@ class HammingCheck {
     private int numParityBits;
 
 	public static void main(String args[]) {
-        String in = "110011101111";
+        String in = "11110000101";
         HammingEncode encode = new HammingEncode(in);
-        System.out.println(calculateNumParityBits("0 1 1 1 001 1 0011001 1 10101"));
         HammingCheck check = new HammingCheck();
         check.setInitialFrame(in);
         System.out.println(check.calculateOriginal());
@@ -25,7 +24,6 @@ class HammingCheck {
             out[i] = Integer.parseInt(input.substring(i,i+1));
             System.out.print(out[i]);
         }
-        System.out.println("======");
         return out;
     }
 
@@ -80,6 +78,7 @@ class HammingCheck {
                 numParityBits++;
             }
         }
+        numParityBits--;
     }
 
 
@@ -87,19 +86,24 @@ class HammingCheck {
         newCalculateParityBits();
         int parityIndex = 1;
         int errorIndex = 0;
-        for (int p = 1; p < numParityBits; p++){
+
+        for (int p = 1; p <= numParityBits; p++){
 
             int parityValue = 0;
-
-            for (int i = parityIndex - 1; i < encodedFrame.length; i++){
+            System.out.println();
+            for (int i = parityIndex; i < encodedFrame.length; i++){
+                System.out.println(((i-parityIndex+2)/parityIndex)%2);
                 if (((i-parityIndex+1)/parityIndex)%2 == 0){
                     parityValue += encodedFrame[i];
                 }
             }
 
-            System.out.println(parityValue);
-            if (encodedFrame[parityIndex - 1] != (parityValue) % 2){
-                System.out.println("Error detected!");
+            if (encodedFrame[parityIndex - 1] == (parityValue) % 2){
+                System.out.println("Good");
+            } else {
+                System.out.println("Bad");
+                System.out.println(encodedFrame[parityIndex - 1]);
+                System.out.println((parityValue) % 2);
                 errorIndex += parityIndex;
             }
 
@@ -111,13 +115,14 @@ class HammingCheck {
         if (errorIndex > 0) {
             encodedFrame[errorIndex - 1] = (encodedFrame[errorIndex - 1] + 1) % 2;
         }
+
         String out = "";
         int currentParity = 1;
         for (int i = 0; i < encodedFrame.length; i++){
             if (i + 1 == currentParity) {
                 currentParity *= 2;
             } else {
-                out += encodedFrame[i];
+				out += encodedFrame[i];
             }
         }
 
@@ -159,8 +164,6 @@ class HammingCheck {
 		int error_location = Integer.parseInt(errorLocation, 2);
 		if(error_location != 0) {
 			a[error_location-1] = (a[error_location-1]+1)%2;
-			for(int i=0 ; i < a.length ; i++) {
-			}
 		}
 
 		// Extract the original data from the received (and corrected) code:
