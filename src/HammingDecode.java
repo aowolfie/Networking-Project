@@ -1,5 +1,5 @@
 /**
- * Used to decode Hamming Strings
+ * Used to decodeFrame Hamming Strings
  * @author Adam
  */
 
@@ -39,7 +39,7 @@ class HammingDecode {
      * Decodes the that has be set using setFrame
      * @return Decoded String
      */
-    public String decode(){
+    public String decodeFrame(){
         calculateNumParityBits();
         return calculateDecodedString();
     }
@@ -49,13 +49,13 @@ class HammingDecode {
      * @param frame Hamming encoded string
      * @return Decoded string
      */
-    public String decode(String frame){
+    public String decodeFrame(String frame){
         try {
             setFrame(frame);
         } catch (Exception e){
             return "";
         }
-        return decode();
+        return decodeFrame();
     }
 
     /**
@@ -96,7 +96,6 @@ class HammingDecode {
 
             //Determine the parity bit's value
             for (int i = parityIndex; i < encodedFrame.length; i++){
-                System.out.println(((i-parityIndex+2)/parityIndex)%2);
                 if (((i-parityIndex+1)/parityIndex)%2 == 0){
                     parityValue += encodedFrame[i];
                 }

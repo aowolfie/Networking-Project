@@ -1,5 +1,5 @@
 # Networking-Project
-Due on 30/11/16
+Due on 12/07/16
 
 #1. Hamming Method for Error Correction
 ##1.1 Hamming code generation

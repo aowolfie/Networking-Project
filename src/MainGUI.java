@@ -19,6 +19,7 @@ public class MainGUI {
     private JTextField CRCFrameOutput;
     private CRC CRCEncoder;
     private HammingEncode hammingEncoder;
+    private HammingDecode hammingDecoder;
 
     /**
      * Used to launch the GUI
@@ -43,6 +44,9 @@ public class MainGUI {
 
         hammingEncoder = new HammingEncode(hammingEncodeInput.getText());
         hammingEncodeOutput.setText(hammingEncoder.encodeFrame());
+
+        hammingDecoder = new HammingDecode(hammingDecodeInput.getText());
+        hammingDecodeOutput.setText(hammingDecoder.decodeFrame());
 
         CRCFrameInput.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -135,7 +139,7 @@ public class MainGUI {
      */
     private void updateHammingDecode(){
         System.out.println("Yay!");
-        hammingDecodeOutput.setText(HammingDecode.decode(hammingDecodeInput.getText()));
+        hammingDecodeOutput.setText(hammingDecoder.decodeFrame(hammingDecodeInput.getText()));
     }
 
     /**

@@ -2,35 +2,43 @@ import java.util.Random;
 
 /**
  * Created by brandonbeckwith on 11/17/16.
+ *
+ * Main Class for testing everything else
  */
 public class Main {
     public static void main (String[] args){
         System.out.println("Hello World");
-
+        test(90);
     }
 
     public static void test(int max){
         HammingEncode encode = new HammingEncode("101");
+        HammingDecode decode = new HammingDecode("101");
         for (int i=10; i < max; i++){
-            String code = "11111111";
+            String code = generate(i);
             boolean fail = false;
-            System.out.println(code);
+
             String encodedCode = encode.encodeFrame(code);
-            System.out.println(encodedCode);
-            String decodedCode = "";
-            System.out.println("{d}" + decodedCode);
-            //String corruptedCode = corrupt(code);
-            //System.out.println(corruptedCode);
-            //String fixedCode = HammingDecode.decode(corruptedCode);
-            //System.out.println(fixedCode);
+            String decodedCode = decode.decodeFrame(encodedCode);
+            String corruptedCode = corrupt(code);
+            String fixedCode = decode.decodeFrame(corruptedCode);
+
             if (!decodedCode.equals(code)){
                 fail = true;
             }
 
+            if (!fixedCode.equals(code)) {
+                fail = true;
+            }
+
+            System.out.println("============================================================================================================================");
+            System.out.println(code + "\n" + encodedCode + "\n" + decodedCode + "\n" + corruptedCode + "\n" + fixedCode);
+
             if (fail) {
-                System.out.println("Failed{" + i + "}");
-                //System.out.println(code + "\n" + encodedCode + "\n" + decodedCode + "\n" + corruptedCode + "\n" + fixedCode);
+                System.out.println("Failed!     {" + i + "}");
                 break;
+            } else {
+                System.out.println("Passed!     {" + i + "}");
             }
 
 
@@ -39,11 +47,12 @@ public class Main {
 
     private static String corrupt(String frame){
         int pos = (int) (frame.length() * Math.random());
+        System.out.println("Pos" + pos);
         StringBuilder out = new StringBuilder(frame);
-        if (frame.charAt(pos) == '0'){
-            out.setCharAt(pos, '1');
+        if (frame.charAt(2) == '0'){
+            out.setCharAt(2, '1');
         } else {
-            out.setCharAt(pos, '0');
+            out.setCharAt(2, '0');
         }
         return out.toString();
     }
@@ -54,6 +63,7 @@ public class Main {
         for (int i=0; i < length; i++){
             out += (rand.nextInt(5) % 2);
         }
+        out += "1";
         return out;
     }
 }
