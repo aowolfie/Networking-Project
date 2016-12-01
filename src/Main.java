@@ -21,7 +21,7 @@ public class Main {
             System.out.println("{d}" + decodedCode);
             //String corruptedCode = corrupt(code);
             //System.out.println(corruptedCode);
-            //String fixedCode = HammingCheck.decode(corruptedCode);
+            //String fixedCode = HammingDecode.decode(corruptedCode);
             //System.out.println(fixedCode);
             if (!decodedCode.equals(code)){
                 fail = true;

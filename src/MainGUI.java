@@ -135,7 +135,7 @@ public class MainGUI {
      */
     private void updateHammingDecode(){
         System.out.println("Yay!");
-        hammingDecodeOutput.setText(HammingCheck.decode(hammingDecodeInput.getText()));
+        hammingDecodeOutput.setText(HammingDecode.decode(hammingDecodeInput.getText()));
     }
 
     /**
