@@ -91,4 +91,8 @@ public class CRC  {
         return input + calculateCode();
     }
 
+    @Override
+    public String toString() {
+        return generateFrame();
+    }
 }

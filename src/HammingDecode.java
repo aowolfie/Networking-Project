@@ -129,4 +129,12 @@ class HammingDecode {
         return out;
     }
 
+    /**
+     * Returns the decoded string
+     * @return the decoded string
+     */
+    @Override
+    public String toString() {
+        return decodeFrame();
+    }
 }

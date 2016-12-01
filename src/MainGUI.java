@@ -11,7 +11,7 @@ import javax.swing.event.DocumentListener;
 public class MainGUI {
     private JTextField CRCFrameInput;
     private JTextField CRCGeneratorInput;
-    private JPanel MainJPanel;
+    public JPanel MainJPanel;
     private JTextField hammingDecodeOutput;
     private JTextField hammingDecodeInput;
     private JTextField hammingEncodeOutput;
@@ -119,8 +119,6 @@ public class MainGUI {
                 updateHammingDecode();
             }
         });
-
-
     }
 
     /**
@@ -138,8 +136,11 @@ public class MainGUI {
      * Helper method that is used to update the Hamming Decode textField
      */
     private void updateHammingDecode(){
-        System.out.println("Yay!");
-        hammingDecodeOutput.setText(hammingDecoder.decodeFrame(hammingDecodeInput.getText()));
+        try {
+            hammingDecodeOutput.setText(hammingDecoder.decodeFrame(hammingDecodeInput.getText()));
+        } catch (Exception e){
+            hammingDecodeOutput.setText("ERROR!");
+        }
     }
 
     /**

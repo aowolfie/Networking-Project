@@ -10,12 +10,6 @@ public class HammingEncode {
     private int[] initialFrame;
     private int numParityBits;
 
-    //Testing main method
-    public static void main(String[] args) {
-        HammingEncode frame = new HammingEncode("11111111");
-        System.out.println(frame.encodeFrame());
-    }
-
     /**
      * Requires input because so we have values to return
      * @param input The frame to be encoded
@@ -105,10 +99,6 @@ public class HammingEncode {
             return "";
         }
         return encodeFrame();
-    }
-
-    public int getNumParityBits(){
-        return this.numParityBits;
     }
 
     /**
