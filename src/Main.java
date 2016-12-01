@@ -73,7 +73,10 @@ public class Main {
         while (true){
             System.out.println("Please input the number of the task you wish to run.");
             System.out.print("Task Number: ");
-            int num = scan.nextInt();
+            int num = 0;
+            try {
+                num = scan.nextInt();
+            } catch (Exception e){}
             scan.nextLine();
             switch (num){
                 case 1: hamEncode(scan); break;
@@ -85,7 +88,10 @@ public class Main {
                         openGUI();
                     }
                     break;
-                case 6: System.out.println("Done!"); return;
+                case 6:
+                    frame.dispose();
+                    System.out.println("Done!");
+                    return;
                 default : info();break;
             }
         }
@@ -97,7 +103,7 @@ public class Main {
         System.out.println("(1) Hamming encode");
         System.out.println("(2) Hamming decode");
         System.out.println("(3) CRC encode");
-        System.out.println("(4) Run auto tests");
+        System.out.println("(4) Run auto tests for Hamming codes");
         System.out.println("(5) Open GUI");
         System.out.println("(6) Exit");
         printBreak();
@@ -107,14 +113,22 @@ public class Main {
         printBreak();
         System.out.print("Input frame to encode: ");
         String in = scan.nextLine();
-        System.out.println("Encoded string: " + new HammingEncode(in).toString());
+        try {
+            System.out.println("Encoded string: " + new HammingEncode(in).toString());
+        } catch (Exception e){
+            System.out.println("Encoded string: Error!");
+        }
     }
 
     private static void hamDecode(Scanner scan){
         printBreak();
         System.out.print("Input frame to decode: ");
         String in = scan.nextLine();
-        System.out.println("Decoded string: " + new HammingDecode(in).toString());
+        try {
+            System.out.println("Decoded string: " + new HammingDecode(in).toString());
+        } catch (Exception e){
+            System.out.println("Decoded string: Error!");
+        }
     }
 
     private static void CRC(Scanner scan){
@@ -123,7 +137,11 @@ public class Main {
         String frame = scan.nextLine();
         System.out.print("Input CRC generator code: ");
         String generator = scan.nextLine();
-        System.out.println("Encoded string: " + new CRC(frame, generator));
+        try {
+            System.out.println("Encoded string: " + new CRC(frame, generator));
+        } catch (Exception e){
+            System.out.println("Encoded string: Error!");
+        }
     }
 
     private static void openGUI(){
