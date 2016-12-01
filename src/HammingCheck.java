@@ -1,40 +1,31 @@
 /**
- *
+ * Used to decode Hamming Strings
  * @author Adam
  */
 
 class HammingCheck {
 
-    private int[] encodedFrame, decodedFrame;
+    private int[] encodedFrame;
     private int numParityBits;
 
-	public static void main(String args[]) {
-        String in = "11110000101";
-        HammingEncode encode = new HammingEncode(in);
-        HammingCheck check = new HammingCheck();
-        check.setInitialFrame(in);
-        System.out.println(check.calculateOriginal());
-    }
-
-    //Add a method to calculate the number of parity bits in the inputted string
-
-    private static int[] nomString(String input){
-        int[] out = new int[input.length()];
-        for (int i=0; i < input.length(); i++){
-            out[i] = Integer.parseInt(input.substring(i,i+1));
-            System.out.print(out[i]);
-        }
-        return out;
+    /**
+     * The main constructor, requires an initial string so no
+     * errors are thrown
+     * @param frame A frame to be decoded
+     * @throws NumberFormatException In case an invalid string is given
+     */
+    public HammingCheck(String frame) throws NumberFormatException {
+        setFrame(frame);
     }
 
     /**
      * Used to set the initial frame.
      * This converts the string into an int array and checks to see
      * if the string is valid.
-     * @param frame The frame to be encoded
+     * @param frame The frame to be decoded
      * @throws NumberFormatException In case an invalid string is input
      */
-    public void setInitialFrame(String frame) throws NumberFormatException {
+    public void setFrame(String frame) throws NumberFormatException {
         encodedFrame = new int[frame.length()];
         for (int i=0; i < frame.length(); i++) {
             encodedFrame[i] = Integer.parseInt(frame.substring(i,i+1));
@@ -44,32 +35,34 @@ class HammingCheck {
         }
     }
 
-    public static String decode(String frame){
-        for (char c: frame.toCharArray()){
-            if (!(c == '1' || c =='0')){
-                return "";
-            }
-        }
-        return HammingCheck.receive(nomString(frame),calculateNumParityBits(frame));
+    /**
+     * Decodes the that has be set using setFrame
+     * @return Decoded String
+     */
+    public String decode(){
+        calculateNumParityBits();
+        return calculateDecodedString();
     }
 
     /**
-     * Calculates the number of parity bits in the encoded string
+     * Takes an encoded string and decodes it
+     * @param frame Hamming encoded string
+     * @return Decoded string
      */
-    private static int calculateNumParityBits(String in){
-        int parityIndex = 1;
-        int parityNum = 1;
-
-        for (int i=0; i < in.length() -1; i++){
-            if (i+1 == parityNum) {
-                parityNum *= 2;
-                parityIndex++;
-            }
+    public String decode(String frame){
+        try {
+            setFrame(frame);
+        } catch (Exception e){
+            return "";
         }
-        return parityIndex;
+        return decode();
     }
 
-    public void newCalculateParityBits(){
+    /**
+     * Calculates the number of parity bits by iterating over the array
+     * and adding one each time a position is reached
+     */
+    public void calculateNumParityBits(){
         int parityNum = 1;
         numParityBits = 1;
         for (int i=0; i < encodedFrame.length -1; i++){
@@ -82,15 +75,26 @@ class HammingCheck {
     }
 
 
-    public String calculateOriginal(){
-        newCalculateParityBits();
+    /**
+     * Calculates the decoded string
+     * Basically checks the string for errors, corrects them
+     * and converts the array into a string
+     * @return String of decoded bits
+     */
+    public String calculateDecodedString(){
         int parityIndex = 1;
         int errorIndex = 0;
 
-        for (int p = 1; p <= numParityBits; p++){
 
+        /*
+            Checks to see if there is any error present in the string.
+            If an error is detected, its position can be calculated by
+            adding the parity positions that indicated an error together
+         */
+        for (int p = 1; p <= numParityBits; p++){
             int parityValue = 0;
-            System.out.println();
+
+            //Determine the parity bit's value
             for (int i = parityIndex; i < encodedFrame.length; i++){
                 System.out.println(((i-parityIndex+2)/parityIndex)%2);
                 if (((i-parityIndex+1)/parityIndex)%2 == 0){
@@ -98,26 +102,23 @@ class HammingCheck {
                 }
             }
 
-            if (encodedFrame[parityIndex - 1] == (parityValue) % 2){
-                System.out.println("Good");
-            } else {
-                System.out.println("Bad");
-                System.out.println(encodedFrame[parityIndex - 1]);
-                System.out.println((parityValue) % 2);
+            //Compare the parity bit's value to the parity bit encoded in the string
+            if (encodedFrame[parityIndex - 1] != (parityValue) % 2){
                 errorIndex += parityIndex;
             }
 
             parityIndex *= 2;
         }
 
-        System.out.println(errorIndex);
-
+        //Flip the bit at the error position
         if (errorIndex > 0) {
             encodedFrame[errorIndex - 1] = (encodedFrame[errorIndex - 1] + 1) % 2;
         }
 
         String out = "";
         int currentParity = 1;
+
+        //Picks out the data bits and puts them in a string
         for (int i = 0; i < encodedFrame.length; i++){
             if (i + 1 == currentParity) {
                 currentParity *= 2;
@@ -129,56 +130,4 @@ class HammingCheck {
         return out;
     }
 
-	static String receive(int a[], int parity_count) {
-		// This is the receiver code. It receives a Hamming code in array 'a'.
-		// We also require the number of parity bits added to the original data.
-		// Now it must detect the error and correct it, if any.
-		
-		int power;
-		// We shall use the value stored in 'power' to find the correct bits to check for parity.
-		
-		int parity[] = new int[parity_count];
-		// 'parity' array will store the values of the parity checks.
-		
-		String errorLocation = new String();
-		// 'errorLocation' string will be used to store the integer value of error location.
-		
-		for(power=0 ; power < parity_count ; power++) {
-		// Need to check the parities the same no of times as the no of parity bits added.
-			for(int i=0 ; i < a.length ; i++) {
-				// Extracting the bit from 2^(power):
-				int k = i+1;
-				String s = Integer.toBinaryString(k);
-				int bit = ((Integer.parseInt(s))/((int) Math.pow(10, power)))%10;
-				if(bit == 1) {
-					if(a[i] == 1) {
-						parity[power] = (parity[power]+1)%2;
-					}
-				}
-			}
-			errorLocation  = parity[power] + errorLocation ;
-		}
-
-		// This gives us the parity check equation values.
-		// Check if there is a single bit error and then correct it.
-		int error_location = Integer.parseInt(errorLocation, 2);
-		if(error_location != 0) {
-			a[error_location-1] = (a[error_location-1]+1)%2;
-		}
-
-		// Extract the original data from the received (and corrected) code:
-        String out = "";
-        power = parity_count-1;
-		for(int i=a.length ; i > 0 ; i--) {
-			if(Math.pow(2, power) != i) {
-                out += a[i-1];
-			}
-			else {
-				power--;
-			}
-		}
-
-        //Reverse the output because it was printing out of order for some reason.
-        return new StringBuilder(out).reverse().toString();
-	}
 }

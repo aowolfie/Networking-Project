@@ -6,16 +6,7 @@ import java.util.Random;
 public class Main {
     public static void main (String[] args){
         System.out.println("Hello World");
-        System.out.println(HammingCheck.decode("111011101111"));
-        String code = "11111111";
-        boolean fail = false;
-        System.out.println(code);
-        System.out.println(HammingCheck.decode("111011101111"));
-        HammingEncode encode = new HammingEncode("101");
-        String encodedCode = "111011101111";
-        System.out.println(encodedCode);
-        System.out.println(HammingCheck.decode("111011101111"));
-        //System.out.println("{d}" + decodedCode);
+
     }
 
     public static void test(int max){
@@ -26,7 +17,7 @@ public class Main {
             System.out.println(code);
             String encodedCode = encode.encodeFrame(code);
             System.out.println(encodedCode);
-            String decodedCode = HammingCheck.decode(encodedCode.toString());
+            String decodedCode = "";
             System.out.println("{d}" + decodedCode);
             //String corruptedCode = corrupt(code);
             //System.out.println(corruptedCode);
