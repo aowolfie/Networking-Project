@@ -23,31 +23,26 @@ public class Main {
             String corruptedCode = corrupt(encodedCode);
             String fixedCode = decode.decodeFrame(corruptedCode);
 
-            if (!decodedCode.equals(code)){
-                fail = true;
-            }
-
-            if (!fixedCode.equals(code)) {
-                fail = true;
-            }
 
             System.out.println("============================================================================================================================");
-            System.out.println(code + "\n" + encodedCode + "\n" + decodedCode + "\n" + corruptedCode + "\n" + fixedCode);
+            System.out.println("Initial: " + code + "\n" + "Encoded: " + encodedCode + "\n" + "Decoded: " + decodedCode + "\n" + "Corrupted: "+ corruptedCode + "\n" + "Corrected: " + fixedCode);
 
-            if (fail) {
-                System.out.println("Failed!     {" + i + "}");
+            if (!decodedCode.equals(code)){
+                System.out.println("Failed! 'decode'     {" + i +"}");
+                break;
+            } else if (!fixedCode.equals(code)) {
+                System.out.println("Failed! 'fix'     {" + i +"}");
                 break;
             } else {
-                System.out.println("Passed!     {" + i + "}");
+                System.out.println("Passed!                {" + i + "}");
             }
-
-
         }
+        System.out.println("============================================================================================================================");
+        System.out.println("All tests passed!");
     }
 
     private static String corrupt(String frame){
         int pos = (int) (frame.length() * Math.random());
-        System.out.println("Pos" + pos);
         StringBuilder out = new StringBuilder(frame);
         if (frame.charAt(pos) == '0'){
             out.setCharAt(pos, '1');
