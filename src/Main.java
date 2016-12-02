@@ -89,7 +89,9 @@ public class Main {
                     }
                     break;
                 case 6:
-                    frame.dispose();
+                    if (frame != null) {
+                        frame.dispose();
+                    }
                     System.out.println("Done!");
                     return;
                 default : info();break;
